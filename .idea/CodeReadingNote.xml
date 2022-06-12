@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CodeReadingNote">
+    <topics>
+      <topic>
+        <name>lol</name>
+        <note />
+        <updatedAt>2022-06-11 22:58:42</updatedAt>
+        <topicLines>
+          <topicLine>
+            <line>18</line>
+            <inProject>true</inProject>
+            <url>file://$PROJECT_DIR$/src/main/java/com/lsplg/SaveNoteAction.java</url>
+            <note>jncsdjn</note>
+            <relativePath>src/main/java/com/lsplg/SaveNoteAction.java</relativePath>
+          </topicLine>
+        </topicLines>
+      </topic>
+    </topics>
+    <state lastExportDir="" lastImportDir="" />
+  </component>
+</project>

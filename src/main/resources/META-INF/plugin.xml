@@ -1,0 +1,30 @@
+<idea-plugin>
+    <id>com.lsplg.noteplagin</id>
+    <name>Plugin display name here</name>
+    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+
+    <description><![CDATA[
+    Enter short description for your plugin here.<br>
+    <em>most HTML tags may be used</em>
+    ]]></description>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="com.lsplg.SaveNoteAction" class="com.lsplg.SaveNoteAction" text="Save Note Action"
+                description="Save the note">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH" second-keystroke="ctrl N"/>
+        </action>
+        <action id="com.lsplg.NotesListAction" class="com.lsplg.NotesListAction" text="Note List"
+                description="Show list of Notes">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH" second-keystroke="ctrl L"/>
+        </action>
+    </actions>
+</idea-plugin>

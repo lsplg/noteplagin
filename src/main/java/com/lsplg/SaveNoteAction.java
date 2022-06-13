@@ -12,6 +12,9 @@ import com.lsplg.service.impl.NoteServiceImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class SaveNoteAction extends AnAction {
 
@@ -28,7 +31,17 @@ public class SaveNoteAction extends AnAction {
 //        String text = savedNote != null ? savedNote.getNote() : "";
 
         JComponent myPanel = new JPanel();
-        JTextField myTextField = new JTextField("text", 20);
+        JTextField myTextField = new JTextField("Enter your note here", 20);
+        myTextField.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    myTextField.setText("..");
+                }
+            }
+        });
+//        Font font = myTextField.getFont();
+//        font = font.deriveFont(Font.ITALIC);
+//        myTextField.setFont(font);
         JButton myButton = new JButton("Save");
         myButton.addActionListener(e -> {
             Note noteToSave = new Note(myTextField.getText(), lineNumber,  file.getName(), project.getName());

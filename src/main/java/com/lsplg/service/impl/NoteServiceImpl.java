@@ -28,8 +28,8 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void save(Note note, List<Note> savedNotes) {
-        try (ObjectOutputStream objectOutputStream = getObjectOutputStream(note.getProjectName())) {
+    public void save(String projectName, List<Note> savedNotes) {
+        try (ObjectOutputStream objectOutputStream = getObjectOutputStream(projectName)) {
             objectOutputStream.writeObject(savedNotes);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -124,7 +124,7 @@ public class NoteServiceImpl implements NoteService {
                         note1.getLineNumber() == note.getLineNumber())
                 .findFirst().orElse(null);
         savedNotes.remove(noteToDelete);
-        save(note, savedNotes);
+        save(note.getProjectName(), savedNotes);
     }
 
 }

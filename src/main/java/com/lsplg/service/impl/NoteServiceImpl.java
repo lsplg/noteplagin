@@ -18,8 +18,16 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public Note save(Note note) {
         List<Note> notes = findAllByProject(note.getProjectName());
+        Note savesNote = notes.stream()
+                .filter(note1 -> note1.getFileName().equals(note.getFileName())
+                && note1.getLineNumber() == note.getLineNumber())
+                .findFirst()
+                .orElse(null);
         try (ObjectOutputStream objectOutputStream = getObjectOutputStream(note.getProjectName())) {
-            notes.add(note);
+                notes.add(note);
+                if (savesNote != null) {
+                    notes.remove(savesNote);
+                }
             objectOutputStream.writeObject(notes);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -125,6 +133,21 @@ public class NoteServiceImpl implements NoteService {
                 .findFirst().orElse(null);
         savedNotes.remove(noteToDelete);
         save(note.getProjectName(), savedNotes);
+    }
+
+
+    @Override
+    public String[][] getAllAsMatrixByProject(String projectName) {
+        NoteService noteService = new NoteServiceImpl();
+        List<Note> savedNotes = noteService.findAllByProject(projectName);
+        String [][] savedNotesAsMatrix = new String[savedNotes.size()][4];
+        for (int i = 0; i < savedNotes.size(); i++) {
+            savedNotesAsMatrix[i][0] = i + 1 + "";
+            savedNotesAsMatrix[i][1] = savedNotes.get(i).getLineNumber() + 1 + "";
+            savedNotesAsMatrix[i][2] = savedNotes.get(i).getFileName();
+            savedNotesAsMatrix[i][3] = savedNotes.get(i).getNote();
+        }
+        return savedNotesAsMatrix;
     }
 
 }

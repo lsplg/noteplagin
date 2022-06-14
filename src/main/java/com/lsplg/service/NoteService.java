@@ -12,4 +12,5 @@ public interface NoteService {
     List<Note> findAllByProject(String projectName);
     Note findByProjectAndFileNameAndLine(String projectName, String className, int line);
     void delete(Note note);
+    String[][] getAllAsMatrixByProject(String projectName);
 }

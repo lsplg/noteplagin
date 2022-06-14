@@ -49,4 +49,14 @@ public class Note implements Serializable {
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
+
+    @Override
+    public String toString() {
+        return "Note{" +
+                "note='" + note + '\'' +
+                ", lineNumber=" + lineNumber +
+                ", fileName='" + fileName + '\'' +
+                ", projectName='" + projectName + '\'' +
+                '}';
+    }
 }

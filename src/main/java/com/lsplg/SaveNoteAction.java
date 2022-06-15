@@ -7,14 +7,12 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.lsplg.model.panelMaker;
 import com.lsplg.model.Note;
 import com.lsplg.service.impl.NoteServiceImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class SaveNoteAction extends AnAction {
 
@@ -26,9 +24,6 @@ public class SaveNoteAction extends AnAction {
         VirtualFile file = event.getData(PlatformDataKeys.VIRTUAL_FILE);
         Editor editor = event.getData(PlatformDataKeys.EDITOR);
         int lineNumber = editor.getCaretModel().getLogicalPosition().line;
-
-//        Note savedNote = noteService.findByProjectAndFileNameAndLine(project.getName(), file.getName(), line);
-//        String text = savedNote != null ? savedNote.getNote() : "";
         JLabel enterNoteFieldDescription = new JLabel("Enter note for " + lineNumber + " line:");
         JComponent myPanel = new JPanel();
         Note savedNote = noteService.findAllByProject(project.getName()).stream()
@@ -41,26 +36,16 @@ public class SaveNoteAction extends AnAction {
             textFieldSavedNote = savedNote.getNote();
         }
         JTextField myTextField = new JTextField(textFieldSavedNote, 20);
-//        myTextField.addMouseListener(new MouseAdapter() {
-//            public void mouseClicked(MouseEvent e) {
-//                if (e.getButton() == MouseEvent.BUTTON1) {
-//                    myTextField.setText("..");
-//                }
-//            }
-//        });
-//        Font font = myTextField.getFont();
-//        font = font.deriveFont(Font.ITALIC);
-//        myTextField.setFont(font);
         JButton myButton = new JButton("Save");
         myButton.addActionListener(e -> {
             Note noteToSave = new Note(myTextField.getText(), lineNumber,  file.getName(), project.getName());
             noteService.save(noteToSave);
-//            const popupActive = document
-//            noteService.delete(noteToSave);
+            myPanel.setVisible(false);
+            JLabel enteredNoteMessage = new JLabel(
+                    "Note \"" + myTextField.getText() + "\" was entered to line " + lineNumber);
+            panelMaker.OkPanel(enteredNoteMessage, editor);
         });
-        myPanel.add(enterNoteFieldDescription);
-        myPanel.add(myTextField);
-        myPanel.add(myButton);
+        panelMaker.addComponentsToPanel(myPanel, enterNoteFieldDescription, myTextField, myButton );
         JBPopupFactory.getInstance()
                 .createComponentPopupBuilder(myPanel, myTextField)
                 .setFocusable(true)
@@ -72,5 +57,9 @@ public class SaveNoteAction extends AnAction {
     @Override
     public boolean isDumbAware() {
         return super.isDumbAware();
+    }
+
+    public static void makeSaveNotePanel() {
+
     }
 }

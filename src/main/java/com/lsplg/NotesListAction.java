@@ -1,36 +1,27 @@
 package com.lsplg;
 
-import com.google.zxing.pdf417.PDF417Writer;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.lsplg.model.JTableButtonRenderer;
 import com.lsplg.model.Note;
+import com.lsplg.model.panelMaker;
+import com.lsplg.service.impl.ExportDataServiceImpl;
 import com.lsplg.service.impl.NoteServiceImpl;
 import org.jetbrains.annotations.NotNull;
-
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.*;
 import java.util.List;
-import java.lang.*;
 
 public class NotesListAction extends AnAction {
+    final NoteServiceImpl noteService = new NoteServiceImpl();
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        final var noteService = new NoteServiceImpl();
+        final var exportDataService = new ExportDataServiceImpl();
 
         Project project = event.getProject();
         Editor editor = event.getData(PlatformDataKeys.EDITOR);
@@ -39,37 +30,34 @@ public class NotesListAction extends AnAction {
         String [][] savedNotesAsMatrix = noteService.getAllAsMatrixByProject(project.getName());
 
         JTable savedNotesAsTable = new JTable(savedNotesAsMatrix, columnHeader);
-//        savedNotesAsTable.setFillsViewportHeight(true);
+//        savedNotesAsTableAddMouseListener() {
+//
+//        }
         savedNotesAsTable.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    JComponent myPanel = new JPanel();
+                    JPanel myPanel = new JPanel();
                     JLabel areYouSure = new JLabel("Are you sure?");
                     areYouSure.setBounds(0, 0, 100, 100);
                     JButton deleteButton = new JButton("delete");
                     JButton changeButton = new JButton("change");
                     deleteButton.addActionListener(event -> {
+                        int rowToDelete = savedNotesAsTable.rowAtPoint(e.getPoint());
                         JPanel confirmDeletePanel = new JPanel();
-                        JPanel deletingPanel = new JPanel();
                         JButton yesButton = new JButton("yes");
                         yesButton.addActionListener(event1 ->{
-                            int rowToDelete = savedNotesAsTable.rowAtPoint(e.getPoint());
+                            confirmDeletePanel.setVisible(false);
+                            JLabel enteredNoteMessage = deleteMessageLabel(savedNotes.get(rowToDelete));
+                            panelMaker.OkPanel(enteredNoteMessage, editor);
                             noteService.delete(savedNotes.get(rowToDelete));
-                            savedNotesAsTable.remove(rowToDelete);
+//                            savedNotesAsTable.remove(rowToDelete);
                         });
                         JButton noButton = new JButton("no");
-                        deletingPanel.add(yesButton);
-                        deletingPanel.add(noButton);
-                        confirmDeletePanel.add(areYouSure);
-                        confirmDeletePanel.add(deletingPanel);
-                        JBPopupFactory.getInstance()
-                                .createComponentPopupBuilder(confirmDeletePanel, yesButton)
-                                .setFocusable(true)
-                                .setRequestFocus(true)
-                                .createPopup()
-                                .showInBestPositionFor(editor);
-
+                        noButton.addActionListener(event1 -> {
+                            confirmDeletePanel.setVisible(false);
+                        });
+                        panelMaker.createPopup(editor, confirmDeletePanel, yesButton, areYouSure, noButton);
                     });
                     changeButton.addActionListener(event -> {
                         int rowToChange = savedNotesAsTable.rowAtPoint(e.getPoint());
@@ -77,31 +65,15 @@ public class NotesListAction extends AnAction {
                         JTextField myTextField = new JTextField(savedNotes.get(rowToChange).getNote(), 20);
                         JButton myButton = new JButton("Save");
                         myButton.addActionListener(event1 -> {
-                            Note changedNote = new Note(myTextField.getText(),
-                                    savedNotes.get(rowToChange).getLineNumber(),
-                                    savedNotes.get(rowToChange).getFileName(),
-                                    project.getName());
+                            Note changedNote = changedNoteToSave(savedNotes.get(rowToChange).getProjectName(), savedNotes.get(rowToChange), myTextField.getText());
                             noteService.save(changedNote);
-                            noteService.delete(savedNotes.get(rowToChange));
+                            changePanel.setVisible(false);
+                            JLabel enteredNoteMessage = changeMessageLabel(myTextField.getText(), savedNotes, rowToChange);
+                            panelMaker.OkPanel(enteredNoteMessage, editor);
                         });
-                        changePanel.add(myTextField);
-                        changePanel.add(myButton);
-                        JBPopupFactory.getInstance()
-                                .createComponentPopupBuilder(changePanel, myTextField)
-                                .setFocusable(true)
-                                .setRequestFocus(true)
-                                .createPopup()
-                                .showInBestPositionFor(editor);
+                        panelMaker.createPopup(editor, changePanel, myTextField, myButton);
                     });
-                    myPanel.add(deleteButton);
-                    myPanel.add(changeButton);
-                    JBPopupFactory.getInstance()
-                            .createComponentPopupBuilder(myPanel, myPanel)
-                            .setFocusable(true)
-                            .setRequestFocus(true)
-                            .createPopup()
-                            .showInBestPositionFor(editor);
-                }
+                    panelMaker.createPopup(editor, myPanel, myPanel, deleteButton, changeButton);                }
             }
 
             @Override
@@ -128,39 +100,21 @@ public class NotesListAction extends AnAction {
 
             }
         });
-
-        JButton exportButton = new JButton("Export");
-//        File exportInDocx = new File("C:\\Diplom\\" + project.getName() + "\\report.pdf");
-        exportButton.addActionListener(e -> {
-            Document document = new Document();
-            try {
-                PdfWriter.getInstance(document, new FileOutputStream("C:\\Diplom\\" + project.getName() + "\\report.pdf"));
-            } catch (DocumentException ex) {
-                ex.printStackTrace();
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            }
-            document.open();
-            Chunk chunk = new Chunk(savedNotes.toString());
-            try {
-                document.add(chunk);
-            } catch (DocumentException ex) {
-                ex.printStackTrace();
-            }
-            document.close();
-        });
-
         Box contents = new Box(BoxLayout.Y_AXIS);
-        contents.add(new JScrollPane(savedNotesAsTable));
-        contents.add(exportButton);
-
-        JBPopupFactory.getInstance()
-
-                .createComponentPopupBuilder(contents, contents)
-                .setRequestFocus(true)
-                .createPopup()
-                .showInBestPositionFor(editor);
-
+        JButton exportToPDFButton = new JButton("Export to pdf");
+//        File exportInDocx = new File("C:\\Diplom\\" + project.getName() + "\\report.pdf");
+        exportToPDFButton.addActionListener(e -> {
+            exportDataService.toPDF(savedNotes, project.getName());
+            contents.setVisible(false);
+        });
+        JButton exportToDocxButton = new JButton("Export to docx");
+        exportToDocxButton.addActionListener(e -> {
+            exportDataService.toDocx(savedNotes, project.getName());
+            contents.setVisible(false);
+        });
+        panelMaker.addComponentsToPanel(contents, new JScrollPane(savedNotesAsTable),
+                exportToPDFButton, exportToDocxButton);
+        panelMaker.StandardPopup(editor, contents);
     }
 
     @Override
@@ -168,4 +122,25 @@ public class NotesListAction extends AnAction {
         return super.isDumbAware();
     }
 
+    public JLabel changeMessageLabel(String noteText, List<Note> savedNotes, int rowToChange) {
+        JLabel changeNoteMessage = new JLabel(
+                "Note \"" + noteText + "\" to line " +
+                        savedNotes.get(rowToChange).getLineNumber() + " was changed!" );
+        return changeNoteMessage;
+    }
+
+    public JLabel deleteMessageLabel (Note note) {
+        JLabel deleteNoteMessage = new JLabel(
+                "Note \"" + note.getNote() + "\" to "
+                        + note.getLineNumber() + " line was deleted.");
+        return deleteNoteMessage;
+    }
+
+    public Note changedNoteToSave (String projectName, Note note, String changedText) {
+        Note changedNote = new Note(changedText,
+                note.getLineNumber(),
+                note.getFileName(),
+                projectName);
+        return changedNote;
+    }
 }

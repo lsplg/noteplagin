@@ -52,7 +52,7 @@ public class Note implements Serializable {
 
     @Override
     public String toString() {
-        return "Note{" +
+        return "Notez{" +
                 "note='" + note + '\'' +
                 ", lineNumber=" + lineNumber +
                 ", fileName='" + fileName + '\'' +

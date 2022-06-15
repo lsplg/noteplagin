@@ -3,8 +3,6 @@ package com.lsplg.service.impl;
 
 import com.lsplg.model.Note;
 import com.lsplg.service.NoteService;
-import org.apache.tools.ant.Project;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;

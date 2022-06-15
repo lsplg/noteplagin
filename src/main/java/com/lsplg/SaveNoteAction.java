@@ -7,7 +7,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.lsplg.model.panelMaker;
+import com.lsplg.model.PanelMaker;
 import com.lsplg.model.Note;
 import com.lsplg.service.impl.NoteServiceImpl;
 import org.jetbrains.annotations.NotNull;
@@ -24,34 +24,30 @@ public class SaveNoteAction extends AnAction {
         VirtualFile file = event.getData(PlatformDataKeys.VIRTUAL_FILE);
         Editor editor = event.getData(PlatformDataKeys.EDITOR);
         int lineNumber = editor.getCaretModel().getLogicalPosition().line;
-        JLabel enterNoteFieldDescription = new JLabel("Enter note for " + lineNumber + " line:");
-        JComponent myPanel = new JPanel();
-        Note savedNote = noteService.findAllByProject(project.getName()).stream()
+        JLabel enterNotePanelLable = new JLabel("Enter note for " + lineNumber + " line:");
+        JPanel enterNotePanel = new JPanel();
+        String selectedLine = event.getData(PlatformDataKeys.EDITOR).getSelectionModel().getSelectedText();
+        Note savedNoteToChange = noteService.findAllByProject(project.getName()).stream()
                 .filter(note -> note.getFileName().equals(file.getName())
                         && note.getLineNumber() == lineNumber)
                 .findFirst()
                 .orElse(null);
-        String textFieldSavedNote = "";
-        if (savedNote != null) {
-            textFieldSavedNote = savedNote.getNote();
+        String textFieldNoteToSave = "";
+        if (savedNoteToChange != null) {
+            textFieldNoteToSave = savedNoteToChange.getNote();
+            noteService.delete(savedNoteToChange);
         }
-        JTextField myTextField = new JTextField(textFieldSavedNote, 20);
-        JButton myButton = new JButton("Save");
-        myButton.addActionListener(e -> {
-            Note noteToSave = new Note(myTextField.getText(), lineNumber,  file.getName(), project.getName());
+        JTextField enterNoteTextField = new JTextField(textFieldNoteToSave, 20);
+        JButton saveButton = new JButton("Save");
+        saveButton.addActionListener(e -> {
+            Note noteToSave = new Note(enterNoteTextField.getText(), lineNumber, selectedLine,  file.getName(), project.getName());
             noteService.save(noteToSave);
-            myPanel.setVisible(false);
+            enterNotePanel.setVisible(false);
             JLabel enteredNoteMessage = new JLabel(
-                    "Note \"" + myTextField.getText() + "\" was entered to line " + lineNumber);
-            panelMaker.OkPanel(enteredNoteMessage, editor);
+                    "Note \"" + enterNoteTextField.getText() + "\" to line " + lineNumber + " was saved.");
+            PanelMaker.OkPanel(enteredNoteMessage, editor);
         });
-        panelMaker.addComponentsToPanel(myPanel, enterNoteFieldDescription, myTextField, myButton );
-        JBPopupFactory.getInstance()
-                .createComponentPopupBuilder(myPanel, myTextField)
-                .setFocusable(true)
-                .setRequestFocus(true)
-                .createPopup()
-                .showInBestPositionFor(editor);
+        PanelMaker.createPopup(editor, enterNotePanel, enterNoteTextField, enterNotePanelLable, saveButton);
     }
 
     @Override

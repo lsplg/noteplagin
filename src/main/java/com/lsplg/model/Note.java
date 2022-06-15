@@ -8,12 +8,14 @@ public class Note implements Serializable {
 
     private String note;
     private int lineNumber;
+    private String lineText;
     private String fileName;
     private String projectName;
 
-    public Note(String note, int lineNumber, String fileName, String projectName) {
+    public Note(String note, int lineNumber, String selectedText, String fileName, String projectName) {
         this.note = note;
         this.lineNumber = lineNumber;
+        this.lineText = selectedText;
         this.fileName = fileName;
         this.projectName = projectName;
     }
@@ -50,11 +52,20 @@ public class Note implements Serializable {
         this.projectName = projectName;
     }
 
+    public String getLineText() {
+        return lineText;
+    }
+
+    public void setLineText(String lineText) {
+        this.lineText = lineText;
+    }
+
     @Override
     public String toString() {
-        return "Notez{" +
+        return "Note{" +
                 "note='" + note + '\'' +
                 ", lineNumber=" + lineNumber +
+                ", selectedText='" + lineText + '\'' +
                 ", fileName='" + fileName + '\'' +
                 ", projectName='" + projectName + '\'' +
                 '}';

@@ -4,45 +4,35 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class panelMaker {
+public class PanelMaker {
 
-    public static void createPopup(Editor editor, JPanel panel, JComponent preferedComponent,
+    public static void createPopup(Editor editor, JComponent panel, JComponent preferableComponent,
                                    JComponent secondComponent) {
-        addComponentsToPanel(panel, preferedComponent, secondComponent);
-        StandardPopup(editor, panel, preferedComponent);
+        addComponentsToPanel(panel, preferableComponent, secondComponent);
+        StandardPopup(editor, panel, preferableComponent);
     }
 
-    public static void createPopup(Editor editor, JPanel panel, JComponent preferedComponent,
+    public static void createPopup(Editor editor, JComponent panel, JComponent preferableComponent,
                                    JComponent secondComponent, JComponent thirdComponent) {
-        addComponentsToPanel(panel, preferedComponent, secondComponent, thirdComponent);
-        StandardPopup(editor, panel, preferedComponent);
+        addComponentsToPanel(panel, preferableComponent, secondComponent, thirdComponent);
+        StandardPopup(editor, panel, preferableComponent);
     }
 
-    public static void OkPanel(JLabel message, Editor editor) {
+    public static void OkPanel(JLabel label, Editor editor) {
         JButton okButton = new JButton("OK");
         JPanel enteredNoteMessagePanel = new JPanel();
-        enteredNoteMessagePanel.add(message);
+        enteredNoteMessagePanel.add(label);
         enteredNoteMessagePanel.add(okButton);
-        okButton.addActionListener(e1 -> {
+        okButton.addActionListener(e -> {
             enteredNoteMessagePanel.setVisible(false);
         });
         StandardPopup(editor, enteredNoteMessagePanel, okButton);
     }
 
-    public static void StandardPopup(Editor editor, JComponent firstComponent, JComponent seconfComponent) {
+    public static void StandardPopup(Editor editor, JComponent firstComponent, JComponent secondComponent) {
         JBPopupFactory.getInstance()
-                .createComponentPopupBuilder(firstComponent, seconfComponent)
-                .setFocusable(true)
-                .setRequestFocus(true)
-                .createPopup()
-                .showInBestPositionFor(editor);
-    }
-
-    public static void StandardPopup(Editor editor, JComponent component) {
-        JBPopupFactory.getInstance()
-                .createComponentPopupBuilder(component, component)
+                .createComponentPopupBuilder(firstComponent, secondComponent)
                 .setFocusable(true)
                 .setRequestFocus(true)
                 .createPopup()

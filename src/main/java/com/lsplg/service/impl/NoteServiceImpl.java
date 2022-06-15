@@ -138,12 +138,13 @@ public class NoteServiceImpl implements NoteService {
     public String[][] getAllAsMatrixByProject(String projectName) {
         NoteService noteService = new NoteServiceImpl();
         List<Note> savedNotes = noteService.findAllByProject(projectName);
-        String [][] savedNotesAsMatrix = new String[savedNotes.size()][4];
+        String [][] savedNotesAsMatrix = new String[savedNotes.size()][5];
         for (int i = 0; i < savedNotes.size(); i++) {
             savedNotesAsMatrix[i][0] = i + 1 + "";
             savedNotesAsMatrix[i][1] = savedNotes.get(i).getLineNumber() + 1 + "";
-            savedNotesAsMatrix[i][2] = savedNotes.get(i).getFileName();
-            savedNotesAsMatrix[i][3] = savedNotes.get(i).getNote();
+            savedNotesAsMatrix[i][2] = savedNotes.get(i).getLineText();
+            savedNotesAsMatrix[i][3] = savedNotes.get(i).getFileName();
+            savedNotesAsMatrix[i][4] = savedNotes.get(i).getNote();
         }
         return savedNotesAsMatrix;
     }

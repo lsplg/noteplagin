@@ -1,4 +1,4 @@
-package com.lsplg.model;
+package com.lsplg;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ui.popup.JBPopupFactory;

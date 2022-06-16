@@ -18,11 +18,11 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="com.lsplg.SaveNoteAction" class="com.lsplg.SaveNoteAction" text="Save Note Action"
+        <action id="com.lsplg.action.SaveNoteAction" class="com.lsplg.action.SaveNoteAction" text="Save Note Action"
                 description="Save the note">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH" second-keystroke="ctrl N"/>
         </action>
-        <action id="com.lsplg.NotesListAction" class="com.lsplg.NotesListAction" text="Note List"
+        <action id="com.lsplg.action.NotesListAction" class="com.lsplg.action.NotesListAction" text="Note List"
                 description="Show list of Notes">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH" second-keystroke="ctrl L"/>
         </action>

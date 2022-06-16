@@ -2,15 +2,16 @@ package com.lsplg.service.impl;
 
 
 import com.lsplg.model.Note;
-import com.lsplg.service.NoteService;
+import com.lsplg.service.MakeNoteService;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NoteServiceImpl implements NoteService {
+public class MakeNoteServiceImpl implements MakeNoteService {
 
-    private final static String PATH = "C:\\Diplom\\";
+    private final static String PATH = "C:\\Audit\\";
     private final static String FILE_NAME = "\\save.txt";
 
     @Override
@@ -62,16 +63,6 @@ public class NoteServiceImpl implements NoteService {
         }
         return new ArrayList<>();
     }
-
-    @Override
-    public Note findByProjectAndFileNameAndLine(String projectName, String fileName, int lineNumber) {
-        final List<Note> savedNotes = findAllByProject(projectName);
-        return savedNotes.stream()
-                .filter(note -> note.getFileName().equals(fileName) && note.getLineNumber() == lineNumber)
-                .findFirst()
-                .orElse(null);
-    }
-
 
     private ObjectInputStream getObjectInputStream(String projectName) throws FileNotFoundException {
         try {
@@ -136,7 +127,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public String[][] getAllAsMatrixByProject(String projectName) {
-        NoteService noteService = new NoteServiceImpl();
+        MakeNoteService noteService = new MakeNoteServiceImpl();
         List<Note> savedNotes = noteService.findAllByProject(projectName);
         String [][] savedNotesAsMatrix = new String[savedNotes.size()][5];
         for (int i = 0; i < savedNotes.size(); i++) {

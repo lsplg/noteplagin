@@ -9,7 +9,6 @@ import com.lsplg.PanelMaker;
 import com.lsplg.model.Note;
 import com.lsplg.service.impl.MakeNoteServiceImpl;
 import org.jetbrains.annotations.NotNull;
-
 import javax.swing.*;
 
 public class SaveNoteAction extends AnAction {
@@ -42,8 +41,8 @@ public class SaveNoteAction extends AnAction {
             noteService.save(noteToSave);
             enterNotePanel.setVisible(false);
             JLabel enteredNoteMessage = new JLabel(
-                    "Note \"" + enterNoteTextField.getText() + "\" to line " + lineNumber + " was saved.");
-            PanelMaker.OkPanel(enteredNoteMessage, editor);
+                    "Note \"" + enterNoteTextField.getText() + "\" to line " + lineNumber + " was changed.");
+            PanelMaker.okPanel(enteredNoteMessage, editor);
         });
         PanelMaker.createPopup(editor, enterNotePanel, enterNotePanelLabel, enterNoteTextField, saveButton);
     }
@@ -53,7 +52,4 @@ public class SaveNoteAction extends AnAction {
         return super.isDumbAware();
     }
 
-    public static void makeSaveNotePanel() {
-
-    }
 }

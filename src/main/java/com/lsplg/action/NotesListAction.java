@@ -42,7 +42,7 @@ public class NotesListAction extends AnAction {
                 exportDataService.toPDF(savedNotes, project.getName());
                 exportToPDFPanel.setVisible(false);
                 JLabel exportedToPDFMassage = new JLabel("Data was exported to PDF. You can find report by path C:\\Audit\\" + project.getName() + "\\Report.pdf" );
-                PanelMaker.OkPanel(exportedToPDFMassage, editor);
+                PanelMaker.okPanel(exportedToPDFMassage, editor);
             });
             JButton noButton = new JButton("no");
             noButton.addActionListener(e1 -> {
@@ -88,7 +88,7 @@ public class NotesListAction extends AnAction {
                         yesButton.addActionListener(event1 ->{
                             confirmDeletePanel.setVisible(false);
                             JLabel enteredNoteMessage = deleteMessageLabel(savedNoteList.get(rowToDelete));
-                            PanelMaker.OkPanel(enteredNoteMessage, editor);
+                            PanelMaker.okPanel(enteredNoteMessage, editor);
                             noteService.delete(savedNoteList.get(rowToDelete));
                         });
                         JButton noButton = new JButton("no");
@@ -109,7 +109,7 @@ public class NotesListAction extends AnAction {
                             noteService.save(changedNote);
                             changeTextNotePanel.setVisible(false);
                             JLabel enteredNoteMessage = changeMessageLabel(savedNoteText.getText(), savedNoteList.get(rowToChange).getLineNumber());
-                            PanelMaker.OkPanel(enteredNoteMessage, editor);
+                            PanelMaker.okPanel(enteredNoteMessage, editor);
                         });
                         PanelMaker.createPopup(editor, changeTextNotePanel, savedNoteText, saveNoteButton);
                     });

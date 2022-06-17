@@ -19,7 +19,7 @@ public class PanelMaker {
         StandardPopup(editor, panel, preferableComponent);
     }
 
-    public static void OkPanel(JLabel label, Editor editor) {
+    public static void okPanel(JLabel label, Editor editor) {
         JButton okButton = new JButton("OK");
         JPanel enteredNoteMessagePanel = new JPanel();
         enteredNoteMessagePanel.add(label);

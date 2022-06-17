@@ -27,7 +27,7 @@ public class MakeNoteServiceImpl implements MakeNoteService {
                 if (savesNote != null) {
                     notes.remove(savesNote);
                 }
-            objectOutputStream.writeObject(notes);
+                objectOutputStream.writeObject(notes);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
